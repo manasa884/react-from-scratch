@@ -13,7 +13,7 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         exclude:/(node_modules|bower_components)/,
-        loader: "babel-loader",
+        use: ["babel-loader", "eslint-loader"],
         options: { presets: ["@babel/env"]}
       },
       {
@@ -49,5 +49,9 @@ module.exports = {
     publicPath: "http://localhost:3000/dist/",
     hotOnly: true
   },
+  /* Adding source map for better error logs - reference 
+   * to original file that raised an error instead of the bundled file 
+  */
+  devtool: 'inline-source-map',
   plugins: [new webpack.HotModuleReplacementPlugin()]
 };
