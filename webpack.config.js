@@ -13,8 +13,13 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         exclude:/(node_modules|bower_components)/,
-        use: ["babel-loader", "eslint-loader"],
-        options: { presets: ["@babel/env"]}
+        use: [
+          {
+            loader: "babel-loader",
+            options: { presets: ["@babel/env"] }
+          }, 
+          "eslint-loader"
+        ],
       },
       {
         test: /\.s[ac]ss$/i,
