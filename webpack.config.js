@@ -17,12 +17,19 @@ module.exports = {
         options: { presets: ["@babel/env"]}
       },
       {
-        test: /\.css$/,
+        test: /\.s[ac]ss$/i,
         /* 'loader' is a shorthand for the 'use' property, when
          * only one loader is being utilized. 
          * (css-loader requires style-loader in order to work) 
         */
-        use: ["style-loader", "css-loader"]
+        use: [
+          // Creates `style` nodes from JS strings
+          "style-loader", 
+          // Translates CSS into CommonJS
+          "css-loader", 
+          // Compiles Sass to CSS
+          "sass-loader"
+        ]
       }
     ]
   },
