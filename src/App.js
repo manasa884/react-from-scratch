@@ -6,7 +6,7 @@ class App extends React.Component {
     render () {
         return (
             <div>
-                <h1 className={styles.h1}>Hello, World!</h1>
+                <h1 className={styles.header}>Hello, World!</h1>
                 <h2>Goodbye</h2>
             </div>
         );

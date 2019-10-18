@@ -1,7 +1,6 @@
 const path = require("path");
 const webpack = require("webpack");
 
-
 module.exports = {
   /* The point or points where to start the application bundling 
    * process. 
@@ -22,18 +21,20 @@ module.exports = {
         ],
       },
       {
-        test: /\.s[ac]ss$/i,
+        test: /\.(sa|sc|c)ss$/,
         /* 'loader' is a shorthand for the 'use' property, when
          * only one loader is being utilized. 
          * (css-loader requires style-loader in order to work) 
         */
-        use: [
-          // Creates `style` nodes from JS strings
-          "style-loader", 
-          // Translates CSS into CommonJS
-          "css-loader", 
-          // Compiles Sass to CSS
-          "sass-loader"
+       use: [
+          "style-loader", // Creates `style` nodes from JS strings
+          {
+            loader: "css-loader", // Translates CSS into CommonJS
+            options: {
+              modules: true, /* Turns on CSS modules mode */
+              localIdentName: "[name]__[local]___[hash:base64:5]"
+            }
+          }
         ]
       }
     ]
