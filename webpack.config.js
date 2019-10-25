@@ -1,7 +1,13 @@
 const path = require("path");
 const webpack = require("webpack");
+/* mini-css-extract-plugin extracts our CSS out of the JavaScript 
+ * bundle into a separate file, essential for production builds. 
+*/
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-module.exports = {
+module.exports = (_, argv) => {
+  const isDevelopment = argv.mode === "development"
+  return {
   /* The point or points where to start the application bundling 
    * process. 
   */
@@ -21,18 +27,44 @@ module.exports = {
         ],
       },
       {
-        test: /\.(sa|sc|c)ss$/,
+        test: /\.module\.(sc|sa|c)ss$/,
+        use: [
+          /* style-loader injects our styles into our DOM by creating 'style' 
+           * nodes from JS strings 
+          */
+          isDevelopment ? "style-loader" : MiniCssExtractPlugin.loader,
+          {
+            /* css-loader interprets @import and @url and resolves them 
+             * (css-loader requires style-loader in order to work) 
+            */
+            loader: "css-loader", 
+            options: {
+              modules: true,
+              sourceMap: isDevelopment
+            }
+          },
+          {
+            /* Converts SCSS into CSS */
+            loader: "sass-loader",
+            options: {
+              sourceMap: isDevelopment
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(sc|sa|c)ss$/,
         /* 'loader' is a shorthand for the 'use' property, when
          * only one loader is being utilized. 
-         * (css-loader requires style-loader in order to work) 
         */
+       exclude: /\.module\.(sc|sa|c)ss$/,
        use: [
-          "style-loader", // Creates `style` nodes from JS strings
+        isDevelopment ? "style-loader" : MiniCssExtractPlugin.loader, 
+          "css-loader", 
           {
-            loader: "css-loader", // Translates CSS into CommonJS
+            loader: "sass-loader",
             options: {
-              modules: true, /* Turns on CSS modules mode */
-              localIdentName: "[name]__[local]___[hash:base64:5]"
+              sourceMap: isDevelopment
             }
           }
         ]
@@ -42,7 +74,7 @@ module.exports = {
   /* Allows us to specify which extensions Webpack will resolve,
    * allowing us to import modules without adding their extensions. 
   */
-  resolve: { extensions: ["*", ".js", ".jsx"] },
+  resolve: { extensions: ["*", ".js", ".jsx", ".scss"] },
   /* Where to place bundled code. */
   output: {
     path: path.resolve(__dirname, "dist/"),
@@ -65,6 +97,12 @@ module.exports = {
   /* Adding source map for better error logs - reference 
    * to original file that raised an error instead of the bundled file 
   */
-  devtool: 'inline-source-map',
-  plugins: [new webpack.HotModuleReplacementPlugin()]
-};
+  devtool: "inline-source-map",
+  plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+    new MiniCssExtractPlugin({
+      filename: isDevelopment ? "[name].css" : "[name].[hash].css",
+      chunkFilename: isDevelopment ? "[id].css" : "[id].[hash].css" 
+    })
+  ]
+}};

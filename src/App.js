@@ -1,13 +1,14 @@
 import React from 'react';
 import { hot } from 'react-hot-loader';
-import styles from './App.module.scss';
-
+import { BrowserRouter, Route } from 'react-router-dom';
+import Home from './pages/Home/Home';
 class App extends React.Component {
     render () {
         return (
             <div>
-                <h1 className={styles.header}>Hello, World!</h1>
-                <h2>Goodbye</h2>
+                <BrowserRouter>
+                    <Route exact path="/" component={Home} />
+                </BrowserRouter>
             </div>
         );
     }
